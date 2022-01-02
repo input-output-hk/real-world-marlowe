@@ -44,6 +44,13 @@ PARTY_A_PUBKEYHASH=$(
 
 echo "The first party has the address $PARTY_A_ADDRESS and the public-key hash $PARTY_A_PUBKEYHASH. They have the following UTxOs in their wallet:"
 echo
+marlowe-cli util clean "${MAGIC[@]}"                             \
+                       --socket-path "$CARDANO_NODE_SOCKET_PATH" \
+                       --required-signer "$PARTY_A_PAYMENT_SKEY" \
+                       --change-address "$PARTY_A_ADDRESS"       \
+                       --out-file /dev/null                      \
+                       --submit=600                              \
+> /dev/null
 cardano-cli query utxo "${MAGIC[@]}" --address "$PARTY_A_ADDRESS"
 
 echo "We select the UTxO with the most funds to use in executing the contract."
@@ -72,6 +79,13 @@ PARTY_B_PUBKEYHASH=$(
 
 echo "The second party has the address $PARTY_B_ADDRESS and public-key hash $PARTY_B_PUBKEYHASH. They have the following UTxOs in their wallet:"
 echo
+marlowe-cli util clean "${MAGIC[@]}"                             \
+                       --socket-path "$CARDANO_NODE_SOCKET_PATH" \
+                       --required-signer "$PARTY_B_PAYMENT_SKEY" \
+                       --change-address "$PARTY_B_ADDRESS"       \
+                       --out-file /dev/null                      \
+                       --submit=600                              \
+> /dev/null
 cardano-cli query utxo "${MAGIC[@]}" --address "$PARTY_B_ADDRESS"
 
 echo "We select the UTxO with the most funds to use in executing the contract."
@@ -87,16 +101,10 @@ echo "The second party will spend the UTxO $TX_0_PARTY_B."
 
 # Configure the validator.
 
-CONTRACT_ADDRESS=$(
-marlowe-cli contract address "${MAGIC[@]}"        \
-                     --slot-length "$SLOT_LENGTH" \
-                     --slot-offset "$SLOT_OFFSET" \
-)
+CONTRACT_ADDRESS=$(marlowe-cli contract address "${MAGIC[@]}")
 
-marlowe-cli contract validator "${MAGIC[@]}"                \
-                               --slot-length "$SLOT_LENGTH" \
-                               --slot-offset "$SLOT_OFFSET" \
-                               --out-file marlowe.plutus    \
+marlowe-cli contract validator "${MAGIC[@]}"             \
+                               --out-file marlowe.plutus \
                                --print-stats
 
 
@@ -139,7 +147,9 @@ cat > tx-1.contract << EOI
 "close"
 EOI
 
-marlowe-cli contract datum --contract-file tx-1.contract \
+marlowe-cli contract datum --slot-length "$SLOT_LENGTH"  \
+                           --slot-offset "$SLOT_OFFSET"  \
+                           --contract-file tx-1.contract \
                            --state-file    tx-1.state    \
                            --out-file      tx-1.datum
 
@@ -190,7 +200,9 @@ cat > tx-2.contract << EOI
 "close"
 EOI
 
-marlowe-cli contract datum --contract-file tx-2.contract \
+marlowe-cli contract datum --slot-length "$SLOT_LENGTH"  \
+                           --slot-offset "$SLOT_OFFSET"  \
+                           --contract-file tx-2.contract \
                            --state-file    tx-2.state    \
                            --out-file      tx-2.datum
 
@@ -338,31 +350,6 @@ cardano-cli query utxo "${MAGIC[@]}" --address "$PARTY_A_ADDRESS" | sed -n -e "1
 
 echo "Here is the UTxO at the second party's address:"
 cardano-cli query utxo "${MAGIC[@]}" --address "$PARTY_B_ADDRESS" | sed -n -e "1p;2p;/$TX_1/p;/$TX_2/p;/$TX_3/p"
-
-
-# Clean up wallets
-
-cardano-cli query utxo "${MAGIC[@]}" --address "$PARTY_A_ADDRESS" --out-file /dev/stdout                        \
-| jq -r '. | to_entries | sort_by(- .value.value.lovelace) | .[] | select((.value.value | length) == 1) | .key' \
-| sed -e 's/^/--tx-in /'                                                                                        \
-| xargs -n 9999 marlowe-cli transaction simple "${MAGIC[@]}"                                                    \
-                                               --socket-path "$CARDANO_NODE_SOCKET_PATH"                        \
-                                               --change-address "$PARTY_A_ADDRESS"                              \
-                                               --out-file tx-3.raw                                              \
-                                               --required-signer "$PARTY_A_PAYMENT_SKEY"                        \
-                                               --submit=600                                                     \
-> /dev/null
-
-cardano-cli query utxo "${MAGIC[@]}" --address "$PARTY_B_ADDRESS" --out-file /dev/stdout                        \
-| jq -r '. | to_entries | sort_by(- .value.value.lovelace) | .[] | select((.value.value | length) == 1) | .key' \
-| sed -e 's/^/--tx-in /'                                                                                        \
-| xargs -n 9999 marlowe-cli transaction simple "${MAGIC[@]}"                                                    \
-                                               --socket-path "$CARDANO_NODE_SOCKET_PATH"                        \
-                                               --change-address "$PARTY_B_ADDRESS"                              \
-                                               --out-file tx-4.raw                                              \
-                                               --required-signer "$PARTY_B_PAYMENT_SKEY"                        \
-                                               --submit=600                                                     \
-> /dev/null
 
 
 # Return error if the transaction succeeded.
