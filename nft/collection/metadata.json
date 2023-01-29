@@ -1,0 +1,65 @@
+{
+  "YoTr2016-0" : {
+    "copyright"   : "(c) 2016 Brian W Bush"
+  , "artist"      : "Brian W Bush"
+  , "name"        : "Yogācāra Triptych"
+  , "year"        : 2016
+  , "description" : [
+      "A series of three original artworks on the subject of Yogācāra"
+    , "philosophy."
+    ]
+  , "image"       : "ipfs://Qma2TDVkJPwt14WheDnzvwyyutnsabWhn64ey3f4imqLXo"
+  , "mediaType"   : "image/png"
+  , "contract"    : "A Marlowe role token: <https://marlowe-finance.io/>."
+  }
+, "YoTr2016-1" : {
+    "copyright"   : "(c) 2016 Brian W Bush"
+  , "artist"      : "Brian W Bush"
+  , "series"      : "Yogācāra Triptych"
+  , "number"      : 1
+  , "name"        : "The imagination of the unreal"
+  , "year"        : 2016
+  , "medium"      : "acrylic, aluminum mesh, and papier-mâché on wood panel"
+  , "dimensions"  : "12″ × 14″"
+  , "description" : [
+      "Yogācāra Triptych #1: The imagination of the unreal, 2016,"
+    , "acrylic, aluminum mesh, and papier-mâché on wood panel,"
+    , "12″ × 14″."
+    ]
+  , "image"       : "ipfs://QmVpfNww1KKQ4SWDJaeHoApjt2KWLXraV2xWdXhhVPLTEG"
+  , "mediaType"   : "image/png"
+  }
+, "YoTr2016-2" : {
+    "copyright"   : "(c) 2016 Brian W Bush"
+  , "artist"      : "Brian W Bush"
+  , "series"      : "Yogācāra Triptych"
+  , "number"      : 2
+  , "name"        : "The dependence on flowing conditions"
+  , "year"        : 2016
+  , "medium"      : "alabaster"
+  , "dimensions"  : "3″ × 2.5″ × 2.5″"
+  , "description" : [
+      "Yogācāra Triptych #2: The dependence on flowing conditions,"
+    , "2016, alabaster, 3″ × 2.5″ × 2.5″."
+    ]
+  , "image"       : "ipfs://QmTBNjkoZ6wC9erfVCoabMVueQmQTzCGFXDvK47U3p3KgR"
+  , "mediaType"   : "image/png"
+  }
+, "YoTr2016-3" : {
+    "copyright"   : "(c) 2016 Brian W Bush"
+  , "artist"      : "Brian W Bush"
+  , "series"      : "Yogācāra Triptych"
+  , "number"      : 3
+  , "name"        : "The external non-existence of what appears in the way it appears"
+  , "year"        : 2016
+  , "medium"      : "acrylic and vanilla extract on canvas board"
+  , "dimensions"  : "16″ × 20″"
+  , "description" : [
+      "Yogācāra Triptych #3: The external non-existence of what"
+    , "appears in the way it appears, 2016, acrylic and vanilla"
+    , "extract on canvas board, 16″ × 20″."
+    ]
+  , "image"       : "ipfs://QmW9EEdgxz9RYn52dt3Ynnw39ToN5npcgr4KNwVKQMSXDR"
+  , "mediaType"   : "image/png"
+  }
+}

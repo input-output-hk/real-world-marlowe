@@ -1,0 +1,12 @@
+tmp/
+*.tmp
+*.log
+*.sw?
+.ipynb_checkpoints/
+*.socket
+*.address
+*.skey
+tx-*.unsigned
+tx-*.marlowe
+state.json
+contract.json
