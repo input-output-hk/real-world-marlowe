@@ -28,6 +28,7 @@
           # local.marlowe.cardano-address
           # local.marlowe.cardano-node
             local.pkgs.cardano.packages.cardano-cli
+            p.z3
             p.coreutils
             p.curl
             p.gnused
