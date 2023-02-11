@@ -1,0 +1,100 @@
+{
+     "c.marlowe": {
+         "name": "$c.marlowe",
+         "description": "The Handle Standard",
+         "website": "https://adahandle.com",
+         "image": "ipfs://QmPnTMvxek7ozeCcvne38xEZMn5Nw5MUJuPDQ1XTY3aznC",
+         "core": {
+            "og": 0,
+            "termsofuse": "https://adahandle.com/tou",
+            "handleEncoding": "utf-8",
+            "prefix": "$",
+            "version": 0
+         },
+         "augmentations": []
+      },
+      "e.cary": {
+         "name": "$e.cary",
+         "description": "The Handle Standard",
+         "website": "https://adahandle.com",
+         "image": "ipfs://QmXCnoT4m9ogNuzzEb9cii95XAk4RTXGDJHu8ZfLvRDBCX",
+         "core": {
+            "og": 0,
+            "termsofuse": "https://adahandle.com/tou",
+            "handleEncoding": "utf-8",
+            "prefix": "$",
+            "version": 0
+         },
+         "augmentations": []
+      },
+      "f.beaumont": {
+         "name": "$f.beaumont",
+         "description": "The Handle Standard",
+         "website": "https://adahandle.com",
+         "image": "ipfs://QmRGUDsZGoGgeDAoRc3X3PEPvuvhBSAgg75yxyyv5df5Kq",
+         "core": {
+            "og": 0,
+            "termsofuse": "https://adahandle.com/tou",
+            "handleEncoding": "utf-8",
+            "prefix": "$",
+            "version": 0
+         },
+         "augmentations": []
+      },
+      "j.lumley": {
+         "name": "$j.lumley",
+         "description": "The Handle Standard",
+         "website": "https://adahandle.com",
+         "image": "ipfs://Qmb6y7FfHQvNTsiFd2GW5xoE6AcH58eyLoMmv6qqoriBxo",
+         "core": {
+            "og": 0,
+            "termsofuse": "https://adahandle.com/tou",
+            "handleEncoding": "utf-8",
+            "prefix": "$",
+            "version": 0
+         },
+         "augmentations": []
+      },
+      "j.webster": {
+         "name": "$j.webster",
+         "description": "The Handle Standard",
+         "website": "https://adahandle.com",
+         "image": "ipfs://QmdYMuNR1gzwYXgRFASt3te8MYWxFVeNNcE4Ei3XzJtC3A",
+         "core": {
+            "og": 0,
+            "termsofuse": "https://adahandle.com/tou",
+            "handleEncoding": "utf-8",
+            "prefix": "$",
+            "version": 0
+         },
+         "augmentations": []
+      },
+      "m.herbert": {
+         "name": "$m.herbert",
+         "description": "The Handle Standard",
+         "website": "https://adahandle.com",
+         "image": "ipfs://QmNgP5sgsi8TiuTZx1XrkAbBemT4FVukpUtjdCKNsPagDv",
+         "core": {
+            "og": 0,
+            "termsofuse": "https://adahandle.com/tou",
+            "handleEncoding": "utf-8",
+            "prefix": "$",
+            "version": 0
+         },
+         "augmentations": []
+      },
+      "w.shakespeare": {
+         "name": "$w.shakespeare",
+         "description": "The Handle Standard",
+         "website": "https://adahandle.com",
+         "image": "ipfs://QmSJFkaj59hQbJcGLTyPYMwEHu6JxK3taU6RekdctVB3u5",
+         "core": {
+            "og": 0,
+            "termsofuse": "https://adahandle.com/tou",
+            "handleEncoding": "utf-8",
+            "prefix": "$",
+            "version": 0
+         },
+         "augmentations": []
+      }
+}
