@@ -4,7 +4,7 @@
   inputs = {
     jupyterWith.url = "github:tweag/jupyterWith";
     flake-utils.url = "github:numtide/flake-utils";
-    here.url = "github:input-output-hk/marlowe-cardano/SCP-4758";
+    here.url = "github:bwbush/marlowe-cardano/real-world";
   };
 
   outputs = { self, nixpkgs, jupyterWith, flake-utils, here }:
@@ -25,8 +25,11 @@
           extraPackages = p: [
             local.marlowe-rt
             local.marlowe-cli
+            local.marlowe.haskell.packages.marlowe-apps.components.exes.marlowe-finder
+            local.marlowe.haskell.packages.marlowe-apps.components.exes.marlowe-oracle
+            local.marlowe.haskell.packages.marlowe-apps.components.exes.marlowe-pipe
+            local.marlowe.haskell.packages.marlowe-apps.components.exes.marlowe-scaling
           # local.marlowe.cardano-address
-          # local.marlowe.cardano-node
             local.pkgs.cardano.packages.cardano-cli
             p.z3
             p.coreutils
