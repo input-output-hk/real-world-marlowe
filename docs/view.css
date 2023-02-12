@@ -1,0 +1,30 @@
+
+.examples {
+}
+
+.example {
+  width: 250px;
+  height:250px;
+  padding: 15px;
+  border-radius: 15px;
+  background: lightblue;
+  cursor: pointer;
+}
+
+.example h3 {
+  margin: 0;
+  text-align: center;
+}
+
+.example img {
+  display: block;
+  max-width: 100%;
+  margin: auto;
+  padding: 10px;
+}
+
+.example span {
+  display: block;
+  text-align: center;
+  font-style: italic;
+}
