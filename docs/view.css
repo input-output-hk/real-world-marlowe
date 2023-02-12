@@ -12,6 +12,8 @@
   border-radius: 15px;
   background: lightgray;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
 }
 
 .example h3 {
@@ -21,7 +23,7 @@
 
 .example img {
   display: block;
-  max-width: 70%;
+  max-width: 90%;
   max-height: 50%;
   margin: auto;
   padding: 10px;
@@ -39,4 +41,8 @@
 
 .nfts {
   background: lightblue;
+}
+
+body {
+  font-family: sans-serif;
 }
