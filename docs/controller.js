@@ -11,5 +11,5 @@ function setImage(img, path) {
   if (window.location.origin == "file://")
     img.src = "../" + path
   else
-    img.src = "https://raw.githubusercontent.com/bwbush/real-world-marlowe/blob/main/" + path
+    img.src = "https://raw.githubusercontent.com/bwbush/real-world-marlowe/main/" + path
 }
