@@ -11,7 +11,6 @@
   padding: 15px;
   border-radius: 15px;
   background: antiquewhite;
-  cursor: pointer;
   display: flex;
   flex-direction: column;
 }
@@ -37,18 +36,22 @@
 
 .nfts {
   background: darksalmon;
+  cursor: pointer;
 }
 
 .finance {
-  background: lightsteelblue;
+  background: lightblue;
+  cursor: pointer;
 }
 
 .miscellaneous {
   background: navajowhite;
+  cursor: pointer;
 }
 
 .firsts {
-  background: lightblue;
+  background: lightgray;
+  cursor: pointer;
 }
 
 body {
