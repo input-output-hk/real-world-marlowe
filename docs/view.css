@@ -10,7 +10,7 @@
   margin: 15px;
   padding: 15px;
   border-radius: 15px;
-  background: lightgray;
+  background: antiquewhite;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -35,19 +35,19 @@
   font-style: italic;
 }
 
-.firsts {
-  background: lightgray;
+.nfts {
+  background: darksalmon;
 }
 
-.defi {
+.finance {
   background: lightsteelblue;
 }
 
-.realfi {
+.miscellaneous {
   background: navajowhite;
 }
 
-.nfts {
+.firsts {
   background: lightblue;
 }
 
