@@ -1,0 +1,23 @@
+{
+  "Globe": {
+    "name": "Globe Theatre",
+    "image": "ipfs://QmWvB66kPwZJQLMYUcR9ToPWhpPBpb3FtjSgYpKuKbo1Mq",
+    "mediaType": "image/png",
+    "description": "Ticket for the Globe Theatre",
+    "url": "https://www.gutenberg.org/files/22397/22397-h/22397-h.htm"
+  },
+  "Swan": {
+    "name": "Swan Theatre",
+    "image": "ipfs://QmUw49T6EBWvp7mqgJ5gNaony5S14CXoZ4okVKb1Qdr8Tk",
+    "mediaType": "image/png",
+    "description": "Ticket for the Swan Theatre",
+    "url": "https://www.gutenberg.org/files/22397/22397-h/22397-h.htm"
+  },
+  "BearGarden": {
+    "name": "Bear Garden Theatre",
+    "image": "ipfs://QmRujAgTDvq6NMKuVv8xF2DQjM3isYwM4bfUTaDs2JsEK6",
+    "mediaType": "image/png",
+    "description": "Ticket for the Bear Garden Theatre",
+    "url": "https://www.gutenberg.org/files/22397/22397-h/22397-h.htm"
+  }
+}
