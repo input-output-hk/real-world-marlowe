@@ -1,0 +1,55 @@
+{
+  "accounts": [
+    [
+      [
+        {
+          "role_token": "YoTr2016-0"
+        },
+        {
+          "currency_symbol": "",
+          "token_name": ""
+        }
+      ],
+      2000000
+    ],
+    [
+      [
+        {
+          "role_token": "YoTr2016-0"
+        },
+        {
+          "currency_symbol": "76d2abf2f510fe2d2ddd990fd87f68f14360d303b6366cf5a7482ad4",
+          "token_name": "YoTr2016-1"
+        }
+      ],
+      1
+    ],
+    [
+      [
+        {
+          "role_token": "YoTr2016-0"
+        },
+        {
+          "currency_symbol": "76d2abf2f510fe2d2ddd990fd87f68f14360d303b6366cf5a7482ad4",
+          "token_name": "YoTr2016-2"
+        }
+      ],
+      1
+    ],
+    [
+      [
+        {
+          "role_token": "YoTr2016-0"
+        },
+        {
+          "currency_symbol": "76d2abf2f510fe2d2ddd990fd87f68f14360d303b6366cf5a7482ad4",
+          "token_name": "YoTr2016-3"
+        }
+      ],
+      1
+    ]
+  ],
+  "choices": [],
+  "boundValues": [],
+  "minTime": 1
+}

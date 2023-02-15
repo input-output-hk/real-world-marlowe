@@ -1,0 +1,1 @@
+{"timeout":1893456000000,"timeout_continuation":"close","when":[{"case":{"deposits":500000000,"into_account":{"address":"addr1vy9prvx8ufwutkwxx9cmmuuajaqmjqwujqlp9d8pvg6gupceql82h"},"of_token":{"currency_symbol":"","token_name":""},"party":{"role_token":"YoTr2016-0"}},"then":"close"}]}
