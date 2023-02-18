@@ -27,6 +27,7 @@ Click on the image below to navigate to individual contracts.
 | [Shared Ownership of an NFT](nfts/shared/ReadMe.ipynb) | ![Contract](nfts/shared/contract.png) | Several parties jointly purchase an NFT, with an option for one party to buy it from the others. |
 | [NFT Used as Collateral for a Loan](nfts/collateral/ReadMe.ipynb) | ![Contract](nfts/collateral/contract.png) | An NFT is deposited as collateral for a loan, and lost if the loan is not repair on time. |
 | [Pawning a Token for a Stablecoin](nfts/pawn/ReadMe.ipynb) | ![Contract](nfts/pawn/contract.png) | An NFT is pawned for iUSD, and the shop has the option to keep the token unless it is redeemed. |
+| [Token Sale with Oracle](nfts/oracle/ReadMe.ipynb) | ![Contract](nfts/oracle/contract.png) | Tokens are sold for Ada, where a price oracle sets the exchange rate. |
 | [Coupon Bond with Guarantor](realfi/coupon-bond-guaranteed/ReadMe.ipynb) | ![Contract](coupon-bond-guaranteed/contract.png) | An example coupon bond is guaranteed by a third party. |
 | [A Geolocated Marlowe Contract](defi/beamer/ReadMe.ipynb) | ![Contract](defi/beamer/contract.png) | Cardano Beam adds geolocation to a Marlowe contract |
 | [First Peer-to-Peer Marlowe Loan on Mainnet](firsts/loan/ReadMe.ipynb) | ![Contract](firsts/loan/contract.png) | A peer-to-peer installment loan uses a private stablecoin. |
