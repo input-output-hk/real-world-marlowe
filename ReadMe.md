@@ -25,7 +25,7 @@ Click on the image below to navigate to individual contracts.
 | [Small Airdrop of Tokens](nfts/airdrop/ReadMe.ipynb) | ![Contract](nfts/airdrop/contract.png) | Several parties receive an airdrop of tokens at a predetermined time. |
 | [Several NFTs Bundled as a Collective NFT](nfts/collection/ReadMe.ipynb) | ![Contract](nfts/collection/images/contract.png) | A Marlowe contract that is itself an NFT bundles several other NFTs into a smart NFT. |
 | [Shared Ownership of an NFT](nfts/shared/ReadMe.ipynb) | ![Contract](nfts/shared/contract.png) | Several parties jointly purchase an NFT, with an option for one party to buy it from the others. |
-| [NFT Used as Collateral for a Loan](nfts/collateral/ReadMe.ipynb) | ![Contract](nfts/collateral/contract.png) | An NFT is deposited as collateral for a loan, and lost if the loan is not repair on time. |
+| [NFT Used as Collateral for a Loan](nfts/collateral/ReadMe.ipynb) | ![Contract](nfts/collateral/contract.png) | An NFT is deposited as collateral for a loan, and lost if the loan is not repaid on time. |
 | [Pawning a Token for a Stablecoin](nfts/pawn/ReadMe.ipynb) | ![Contract](nfts/pawn/contract.png) | An NFT is pawned for iUSD, and the shop has the option to keep the token unless it is redeemed. |
 | [Token Sale with Oracle](nfts/oracle/ReadMe.ipynb) | ![Contract](nfts/oracle/contract.png) | Tokens are sold for Ada, where a price oracle sets the exchange rate. |
 | [Coupon Bond with Guarantor](realfi/coupon-bond-guaranteed/ReadMe.ipynb) | ![Contract](realfi/coupon-bond-guaranteed/contract.png) | An example coupon bond is guaranteed by a third party. |
