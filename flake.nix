@@ -4,7 +4,7 @@
   inputs = {
     jupyterWith.url = "github:tweag/jupyterWith";
     flake-utils.url = "github:numtide/flake-utils";
-    here.url = "github:bwbush/marlowe-cardano/real-world";
+    here.url = "github:input-output-hk/marlowe-cardano/264d8b4affa74ebbb95076b88439932df4f82d08";
   };
 
   outputs = { self, nixpkgs, jupyterWith, flake-utils, here }:

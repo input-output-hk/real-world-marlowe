@@ -161,22 +161,6 @@
         "type": "github"
       }
     },
-    "actus-tests": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1622458452,
-        "narHash": "sha256-/Rwv1d2rOfAl3EFaUi6gj4df3xbL0e8Vc5AezqspnBg=",
-        "owner": "actusfrf",
-        "repo": "actus-tests",
-        "rev": "acfaab81a2eac8334dda0ac01edff89f3271e4df",
-        "type": "github"
-      },
-      "original": {
-        "owner": "actusfrf",
-        "repo": "actus-tests",
-        "type": "github"
-      }
-    },
     "agenix": {
       "inputs": {
         "nixpkgs": "nixpkgs_17"
@@ -4885,7 +4869,6 @@
     "here": {
       "inputs": {
         "CHaP": "CHaP",
-        "actus-tests": "actus-tests",
         "bitte-cells": "bitte-cells",
         "cardano-world": "cardano-world",
         "data-merge": "data-merge_6",
@@ -4908,17 +4891,17 @@
         "tullia": "tullia_2"
       },
       "locked": {
-        "lastModified": 1676143187,
-        "narHash": "sha256-QKkhmVuahdHu0YwbrtV1WH3pg+uw98noFJIrNEnNHlU=",
-        "owner": "bwbush",
+        "lastModified": 1677590788,
+        "narHash": "sha256-x8J07tJDPg23WoMpInAGjTSCZN78r+Sm2232KMVSq3E=",
+        "owner": "input-output-hk",
         "repo": "marlowe-cardano",
-        "rev": "97b37e147bac0fb13b4bfb9787a3e33e0826b5cd",
+        "rev": "264d8b4affa74ebbb95076b88439932df4f82d08",
         "type": "github"
       },
       "original": {
-        "owner": "bwbush",
-        "ref": "real-world",
+        "owner": "input-output-hk",
         "repo": "marlowe-cardano",
+        "rev": "264d8b4affa74ebbb95076b88439932df4f82d08",
         "type": "github"
       }
     },
