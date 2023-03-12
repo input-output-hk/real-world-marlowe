@@ -1,0 +1,1 @@
+{"timeout":1678591569000,"timeout_continuation":"close","when":[{"case":{"deposits":1,"into_account":{"role_token":"c.marlowe"},"of_token":{"currency_symbol":"8bb3b343d8e404472337966a722150048c768d0a92a9813596c5338d","token_name":"BearGarden"},"party":{"role_token":"c.marlowe"}},"merkleized_then":"811ac63b42c08040914c1e057c095ffb66237dfc41f3a368d53ff38f2d1d2fdd"}]}

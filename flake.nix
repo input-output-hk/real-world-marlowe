@@ -4,7 +4,7 @@
   inputs = {
     jupyterWith.url = "github:tweag/jupyterWith";
     flake-utils.url = "github:numtide/flake-utils";
-    here.url = "github:input-output-hk/marlowe-cardano/264d8b4affa74ebbb95076b88439932df4f82d08";
+    here.url = "github:input-output-hk/marlowe-cardano/c5870081143e2a07b44ab5342ebe8efaa42afc6a";
   };
 
   outputs = { self, nixpkgs, jupyterWith, flake-utils, here }:
@@ -15,6 +15,10 @@
           overlays = nixpkgs.lib.attrValues jupyterWith.overlays;
         };
         local = here.packages.${system};
+        ghcWithPackages = local.marlowe.haskell.project.ghcWithPackages (p: [
+          p.marlowe
+          p.marlowe-cli
+        ]);
         ibash = pkgs.jupyterWith.kernels.bashKernel {
           name = "Marlowe";
         };
@@ -29,13 +33,16 @@
             local.marlowe.haskell.packages.marlowe-apps.components.exes.marlowe-oracle
             local.marlowe.haskell.packages.marlowe-apps.components.exes.marlowe-pipe
             local.marlowe.haskell.packages.marlowe-apps.components.exes.marlowe-scaling
-          # local.marlowe.cardano-address
+            local.pkgs.cardano.packages.cardano-address
             local.pkgs.cardano.packages.cardano-cli
+            local.pkgs.cardano.packages.cardano-wallet
             p.z3
             p.coreutils
             p.curl
             p.gnused
             p.jq
+            p.gcc
+            ghcWithPackages
           ];
         };
       in
