@@ -28,6 +28,7 @@ Click on the image below to navigate to individual contracts.
 | [NFT Used as Collateral for a Loan](nfts/collateral/ReadMe.ipynb) | ![Contract](nfts/collateral/contract.png) | An NFT is deposited as collateral for a loan, and lost if the loan is not repaid on time. |
 | [Pawning a Token for a Stablecoin](nfts/pawn/ReadMe.ipynb) | ![Contract](nfts/pawn/contract.png) | An NFT is pawned for iUSD, and the shop has the option to keep the token unless it is redeemed. |
 | [Token Sale with Oracle](nfts/oracle/ReadMe.ipynb) | ![Contract](nfts/oracle/contract.png) | Tokens are sold for Ada, where a price oracle sets the exchange rate. |
+| [Auction of an NFT](nfts/auction/ReadMe.ipynb) | ![Contract](nfts/auction/contract.png) | An English auction is held to sell an NFT to the highest bidder. |
 | [ACTUS Contract for Principal at Maturity](realfi/actus/actus-pam.ipynb) | ![Contract](realfi/actus/actus-pam-1.png) | Interest is paid periodically for a loan, with the final payment being the principal. |
 | [Coupon Bond with Guarantor](realfi/coupon-bond-guaranteed/ReadMe.ipynb) | ![Contract](realfi/coupon-bond-guaranteed/contract.png) | An example coupon bond is guaranteed by a third party. |
 | [A Geolocated Marlowe Contract](defi/beamer/ReadMe.ipynb) | ![Contract](defi/beamer/contract.png) | Cardano Beam adds geolocation to a Marlowe contract |
