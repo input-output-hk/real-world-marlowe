@@ -7,7 +7,7 @@ Click on the image below to navigate to individual contracts.
 
 ## Marlowe
 
-- [Language](https://marlowe-finance.io/)
+- [Language](https://marlowe.iohk.io/)
 - [Software](https://github.com/input-output-hk/marlowe-cardano/)
 - [Development](https://developers.cardano.org/docs/smart-contracts/marlowe/#resources-for-developing-and-deploying-marlowe-contracts)
 - [Safety](https://github.com/input-output-hk/marlowe-cardano/blob/main/marlowe/best-practices.md)
