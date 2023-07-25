@@ -138,6 +138,7 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
   state <- getState (runtimeURI raffleConfiguration) contractId
   case state of 
     WaitingForPrizeDeposit -> do
+      echo ""
       echo "#########################"
       echo "WaitingForPrizeDeposit"
       sequence $ (\(a,b) -> depositNFT contractId a b) <$> prizes
@@ -163,6 +164,7 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
               submit sponsor raffleConfiguration
               echo $ " >> " ++ tokenName ++ " deposited" 
     WaitingForOracle -> do
+      echo ""
       echo "#########################"
       echo "WaitingForOracle"
       echo "#########################" 
@@ -194,6 +196,7 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
           submit sponsor raffleConfiguration
           return choiceMade
     WaitingForNotify -> do
+      echo ""
       echo "#########################"
       echo "WaitingForNotify"
       echo "#########################"
@@ -213,11 +216,13 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
             submit sponsor raffleConfiguration
              
     Close -> do 
+      echo ""
       echo "#########################"
       echo "Raffle Closed"
       echo "#########################"  
       return () 
     Unknown payload -> do
+      echo ""
       echo "#########################"
       echo "Unknown State : " 
       echo payload
