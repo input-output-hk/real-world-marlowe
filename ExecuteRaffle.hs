@@ -87,8 +87,8 @@ data ContractState
 
 getState :: RuntimeURI -> ContractId -> IO ContractState
 getState runtime contractId = do
-  validityStart <- C.unpack <$> (date  "+\"%Y-%m-%dT%H:%M:%SZ\"" |> captureTrim)
-  validityEnd <-   C.unpack <$> (date "-d" "+10 minutes" "+\"%Y-%m-%dT%H:%M:%SZ\"" |> captureTrim)
+  validityStart <- C.unpack <$> (date "-u" "+\"%Y-%m-%dT%H:%M:%SZ\"" |> captureTrim)
+  validityEnd <-   C.unpack <$> (date "-u" "-d" "+10 minutes" "+\"%Y-%m-%dT%H:%M:%SZ\"" |> captureTrim)
   let contractIdEncoded = replace "#" "%23" contractId
       nextQuery = curl
                   "-s"  
