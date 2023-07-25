@@ -45,11 +45,10 @@ data RaffleConfiguration
     , tmpTxToSign :: FilePath -- tmp file for tx created to sign
     , tmpTxToSubmit :: FilePath -- tmp file for signed tx to submit
     , sponsorAddressFilePath :: FilePath
-    , sponsorCollateralFilePath :: FilePath
     , sponsorPrivateKeyFilePath :: FilePath
     , deadlines :: Deadlines
     } deriving (Show,Generic,A.FromJSON,A.ToJSON)
-data Sponsor = Sponsor {s_address :: String, s_collateral :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
+data Sponsor = Sponsor {s_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 data Oracle = Oracle {o_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 data RuntimeURI = RuntimeURI {host :: String, proxy_port :: Integer, web_port :: Integer} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 data Deadlines = Deadlines {deposit :: String, selectWinner :: String, payout :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
@@ -64,9 +63,8 @@ main = do
   let contractId = args !! 3   
  
   s_address <- C.unpack <$> (cat (sponsorAddressFilePath raffleConfiguration) |> captureTrim)
-  s_collateral <- C.unpack <$> (cat (sponsorCollateralFilePath raffleConfiguration) |> captureTrim)
    
-  let sponsor = Sponsor{ s_address = s_address, s_collateral = s_collateral}
+  let sponsor = Sponsor{ s_address = s_address}
       oracle = Oracle{ o_address = s_address}
 
   runRaffleStateMachine
@@ -155,7 +153,6 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
                 "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
                 "deposit"
                 "--change-address"  (s_address sponsor)
-                "--collateral-utxo" (s_collateral sponsor)
                 "--manual-sign"     (tmpTxToSign raffleConfiguration)
                 "--contract" contractId
                 "--to-party" (s_address sponsor)
@@ -189,7 +186,6 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
             "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
             "choose"
             "--change-address"  (s_address sponsor)
-            "--collateral-utxo" (s_collateral sponsor)
             "--manual-sign"     (tmpTxToSign raffleConfiguration)
             "--contract" contractId
             "--choice" "RANDOM"
@@ -212,7 +208,6 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
               "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
               "notify"
               "--change-address"  (s_address sponsor)
-              "--collateral-utxo" (s_collateral sponsor)
               "--manual-sign"     (tmpTxToSign raffleConfiguration)
               "--contract" contractId
             submit sponsor raffleConfiguration

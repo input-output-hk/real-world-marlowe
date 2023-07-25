@@ -40,11 +40,10 @@ data RaffleConfiguration
     , tmpTxToSign :: FilePath -- tmp file for tx created to sign
     , tmpTxToSubmit :: FilePath -- tmp file for signed tx to submit
     , sponsorAddressFilePath :: FilePath
-    , sponsorCollateralFilePath :: FilePath
     , sponsorPrivateKeyFilePath :: FilePath
     , deadlines :: Deadlines
     } deriving (Show,Generic,A.FromJSON,A.ToJSON)
-data Sponsor = Sponsor {s_address :: String, s_collateral :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
+data Sponsor = Sponsor {s_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 data Oracle = Oracle {o_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 data RuntimeURI = RuntimeURI {host :: String, proxy_port :: Integer, web_port :: Integer} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 data Deadlines = Deadlines {deposit :: String, selectWinner :: String, payout :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
@@ -58,9 +57,8 @@ main = do
   let prizeName = args !! 1
   let prizeFilePath = args !! 2
   s_address <- C.unpack <$> (cat (sponsorAddressFilePath raffleConfiguration) |> captureTrim)
-  s_collateral <- C.unpack <$> (cat (sponsorCollateralFilePath raffleConfiguration) |> captureTrim)
    
-  let sponsor = Sponsor{ s_address = s_address, s_collateral = s_collateral}
+  let sponsor = Sponsor{ s_address = s_address}
 
   prizes <- mintPrizeTokens raffleConfiguration sponsor [prizeName]
   echo $ "Prizes Minted " ++ show prizes
