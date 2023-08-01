@@ -1,5 +1,5 @@
 {
-    "chunkSize": 2,
+    "chunkSize": 5,
     "deadlines": {
         "deposit": "10d",
         "payout": "10d",
