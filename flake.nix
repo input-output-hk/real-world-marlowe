@@ -22,10 +22,6 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  # marlowe = {
-  #   type = "path";
-  #   path = "./..";
-  # };
     marlowe = {
       type = "github";
       owner = "input-output-hk";
