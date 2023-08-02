@@ -1,0 +1,20 @@
+{
+    "chunkSize": 5,
+    "deadlines": {
+        "deposit": "10d",
+        "payout": "10d",
+        "selectWinner": "10d"
+    },
+    "runtimeURI": {
+        "host": "0.0.0.0",
+        "proxy_port": 33295,
+        "web_port": 33296
+    },
+    "sponsorAddressFilePath": "addresses/sponsor/address.txt",
+    "sponsorPrivateKeyFilePath": "addresses/sponsor/extended-private-key.json",
+    
+    "contract": "outputs/raffle.json",
+    "state": "outputs/raffle-state.json",
+    "tmpTxToSign": "outputs/unsigned-tx.txt",
+    "tmpTxToSubmit": "outputs/signed-tx.txt"
+}
