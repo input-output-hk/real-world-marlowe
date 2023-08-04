@@ -1,0 +1,40 @@
+cabal-version:      3.0
+name:               raffle
+version:            0.1.0.0
+-- synopsis:
+-- description:
+license:            Apache-2.0
+license-file:       LICENSE
+author:             Brian W Bush
+maintainer:         brian.bush@iohk.io
+-- copyright:
+category:           Game
+build-type:         Simple
+
+common warnings
+    ghc-options: -Wall -fno-warn-type-defaults
+
+
+executable InitializeRaffle
+    import:           warnings
+    main-is:          InitializeRaffle.hs
+    build-depends:    base ^>=4.14.3.0,
+                      aeson,
+                      bytestring,
+                      MissingH,
+                      PyF,
+                      shh,
+    hs-source-dirs:   app
+    default-language: Haskell2010
+
+executable ExecuteRaffle
+    import:           warnings
+    main-is:          ExecuteRaffle.hs
+    build-depends:    base ^>=4.14.3.0,
+                      aeson,
+                      bytestring,
+                      MissingH,
+                      PyF,
+                      shh
+    hs-source-dirs:   app
+    default-language: Haskell2010
