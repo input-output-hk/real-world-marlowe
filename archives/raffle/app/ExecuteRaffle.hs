@@ -7,71 +7,19 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE TypeApplications #-}
 
+module Main where
+
+import Common
 import Data.List.Utils (replace)
 import Data.Maybe
-import GHC.Generics
 import PyF
 import Shh
-import Shh.Internal (toArgs)
 import System.Environment (getArgs)
+import Tools
+import Types
 import qualified Data.Aeson as A
 import qualified Data.ByteString.Lazy as LBS 
 import qualified Data.ByteString.Lazy.Char8 as C
-
-sleep :: Command a => a
-sleep = toArgs ["sleep"]
-
-jq :: Command a => a
-jq = toArgs ["jq"]
-
-date :: Command a => a
-date = toArgs ["date"]
-
-curl :: Command a => a
-curl = toArgs ["curl"]
-
-cat :: Command a => a
-cat = toArgs ["cat"]
-
-echo :: Command a => a
-echo = toArgs ["echo"]
-
-cardano_cli :: Command a => a
-cardano_cli = toArgs ["cardano-cli"]
-
-marlowe_runtime_cli :: Command a => a
-marlowe_runtime_cli = toArgs ["marlowe-runtime-cli"]
-
-type PolicyId = String
-
-type TokenName = String
-
-type ContractId = String
-
-type RandomNumber = String
-
-type AddressBech32 = String
-
-data RaffleConfiguration 
-    = RaffleConfiguration 
-    { runtimeURI :: RuntimeURI
-    , contract :: FilePath -- where to save the raffle contract json generated
-    , state :: FilePath -- where to save the raffle contract state generated
-    , chunkSize :: Integer -- parameter for generatiing the contract
-    , tmpTxToSign :: FilePath -- tmp file for tx created to sign
-    , tmpTxToSubmit :: FilePath -- tmp file for signed tx to submit
-    , sponsorAddressFilePath :: FilePath
-    , sponsorPrivateKeyFilePath :: FilePath
-    , deadlines :: Deadlines
-    } deriving (Show,Generic,A.FromJSON,A.ToJSON)
-
-newtype Sponsor = Sponsor {s_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
-
-newtype Oracle = Oracle {o_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
-
-data RuntimeURI = RuntimeURI {host :: String, proxy_port :: Integer, web_port :: Integer} deriving (Show,Generic,A.FromJSON,A.ToJSON)
-
-data Deadlines = Deadlines {deposit :: String, selectWinner :: String, payout :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 
 main :: IO ()
 main = do
@@ -124,22 +72,6 @@ getState runtime contractId = do
           else do
             unknown <- C.unpack <$> (nextQuery  |> captureTrim)
             return $ Unknown unknown 
-
-submit :: Sponsor -> RaffleConfiguration ->  IO ()
-submit _sponsor raffleConfiguration = do
-  cardano_cli 
-    "transaction" 
-    "sign"
-    "--signing-key-file" (sponsorPrivateKeyFilePath raffleConfiguration)
-    "--tx-body-file" (tmpTxToSign raffleConfiguration)
-    "--out-file" (tmpTxToSubmit raffleConfiguration)
-  echo " >> tx signed"
-  marlowe_runtime_cli
-    "--marlowe-runtime-host" (host . runtimeURI $ raffleConfiguration)
-    "--marlowe-runtime-port" (proxy_port .  runtimeURI $ raffleConfiguration)
-    "submit" 
-    (tmpTxToSubmit raffleConfiguration)
-  echo " >> tx submitted"
 
 runRaffleStateMachine :: RaffleConfiguration -> Sponsor -> Oracle -> [String] -> [(PolicyId,TokenName)]  -> ContractId -> IO()
 runRaffleStateMachine = runRaffleStateMachine' False

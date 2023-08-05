@@ -16,11 +16,7 @@
   };
 
   inputs = {
-    std = {
-      url = "github:divnix/std";
-      inputs.n2c.follows = "n2c";
-    };
-    n2c.url = "github:shlevy/nix2container/no-Size-on-dir";
+    std.url = "github:divnix/std";
     iogx.url = "github:input-output-hk/iogx";
     marlowe = {
       type = "github";

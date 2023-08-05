@@ -18,6 +18,9 @@ common warnings
 executable InitializeRaffle
     import:           warnings
     main-is:          InitializeRaffle.hs
+    other-modules:    Common
+                      Tools
+                      Types
     build-depends:    base ^>=4.14.3.0,
                       aeson,
                       bytestring,
@@ -30,6 +33,9 @@ executable InitializeRaffle
 executable ExecuteRaffle
     import:           warnings
     main-is:          ExecuteRaffle.hs
+    other-modules:    Common
+                      Tools
+                      Types
     build-depends:    base ^>=4.14.3.0,
                       aeson,
                       bytestring,
