@@ -1,41 +1,57 @@
-#!/usr/bin/env runhaskell
 
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE ExtendedDefaultRules #-}
-{-# LANGUAGE NumericUnderscores #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE QuasiQuotes #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE TypeApplications #-}
 
-import qualified Data.ByteString.Lazy.Char8 as C
-import Shh
-import PyF
-import System.Environment (getEnv,getArgs)
-import GHC.Generics
-import Data.List 
 import Data.List.Utils (replace)
-import Control.Concurrent
 import Data.Maybe
+import GHC.Generics
+import PyF
+import Shh
+import Shh.Internal (toArgs)
+import System.Environment (getArgs)
 import qualified Data.Aeson as A
 import qualified Data.ByteString.Lazy as LBS 
+import qualified Data.ByteString.Lazy.Char8 as C
 
--- cabal new-install --lib shh
--- cabal new-install --lib shh-extras
--- cabal new-install --lib PyF
--- cabal new-install --lib MissingH
--- cabal new-install --lib aeson
+sleep :: Command a => a
+sleep = toArgs ["sleep"]
 
-load SearchPath ["sleep","jq","date","curl","grep","pwd", "cat", "marlowe-cli", "marlowe-runtime-cli", "cardano-cli" ,"echo"]
+jq :: Command a => a
+jq = toArgs ["jq"]
+
+date :: Command a => a
+date = toArgs ["date"]
+
+curl :: Command a => a
+curl = toArgs ["curl"]
+
+cat :: Command a => a
+cat = toArgs ["cat"]
+
+echo :: Command a => a
+echo = toArgs ["echo"]
+
+cardano_cli :: Command a => a
+cardano_cli = toArgs ["cardano-cli"]
+
+marlowe_runtime_cli :: Command a => a
+marlowe_runtime_cli = toArgs ["marlowe-runtime-cli"]
 
 type PolicyId = String
+
 type TokenName = String
+
 type ContractId = String
+
 type RandomNumber = String
+
 type AddressBech32 = String
+
 data RaffleConfiguration 
     = RaffleConfiguration 
     { runtimeURI :: RuntimeURI
@@ -48,25 +64,25 @@ data RaffleConfiguration
     , sponsorPrivateKeyFilePath :: FilePath
     , deadlines :: Deadlines
     } deriving (Show,Generic,A.FromJSON,A.ToJSON)
-data Sponsor = Sponsor {s_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
-data Oracle = Oracle {o_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
-data RuntimeURI = RuntimeURI {host :: String, proxy_port :: Integer, web_port :: Integer} deriving (Show,Generic,A.FromJSON,A.ToJSON)
-data Deadlines = Deadlines {deposit :: String, selectWinner :: String, payout :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 
+newtype Sponsor = Sponsor {s_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
+
+newtype Oracle = Oracle {o_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
+
+data RuntimeURI = RuntimeURI {host :: String, proxy_port :: Integer, web_port :: Integer} deriving (Show,Generic,A.FromJSON,A.ToJSON)
+
+data Deadlines = Deadlines {deposit :: String, selectWinner :: String, payout :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 
 main :: IO ()
 main = do
   args <- getArgs  
-  raffleConfiguration <- (fromJust . A.decode @RaffleConfiguration) <$> (LBS.readFile $ args !! 0) 
-  parties <- (fromJust . A.decode @[AddressBech32]) <$> (LBS.readFile $ args !! 1) 
-  prizes <- (fromJust . A.decode @[(PolicyId,TokenName)]) <$> (LBS.readFile $ args !! 2)
+  raffleConfiguration <- fromJust . A.decode @RaffleConfiguration <$> LBS.readFile (head args) 
+  parties <- fromJust . A.decode @[AddressBech32] <$> LBS.readFile (args !! 1) 
+  prizes <- fromJust . A.decode @[(PolicyId,TokenName)] <$> LBS.readFile (args !! 2)
   let contractId = args !! 3   
- 
-  s_address <- C.unpack <$> (cat (sponsorAddressFilePath raffleConfiguration) |> captureTrim)
-   
-  let sponsor = Sponsor{ s_address = s_address}
-      oracle = Oracle{ o_address = s_address}
-
+  s_address' <- C.unpack <$> (cat (sponsorAddressFilePath raffleConfiguration) |> captureTrim)
+  let sponsor = Sponsor{ s_address = s_address'}
+      oracle = Oracle{ o_address = s_address'}
   runRaffleStateMachine
     raffleConfiguration
     sponsor
@@ -97,57 +113,54 @@ getState runtime contractId = do
   isClose <- ((== "\"contractClosed\""). C.unpack <$>) $ nextQuery |> jq ".errorCode" |> captureTrim
   if isClose then return Close
     else do 
-      isWaitingForOracle <- ((/= "null"). C.unpack <$>) $ (nextQuery |> jq ".applicable_inputs.choices[0]" |> captureTrim)
+      isWaitingForOracle <- (/= "null"). C.unpack <$> (nextQuery |> jq ".applicable_inputs.choices[0]" |> captureTrim)
       if isWaitingForOracle then return WaitingForOracle
       else do 
-        isWaitingForPrizeDeposit <- ((/= "null"). C.unpack <$>) $ (nextQuery |> jq ".applicable_inputs.deposits[0]" |> captureTrim)
+        isWaitingForPrizeDeposit <- (/= "null") . C.unpack <$> (nextQuery |> jq ".applicable_inputs.deposits[0]" |> captureTrim)
         if isWaitingForPrizeDeposit then return WaitingForPrizeDeposit
         else do 
-          isWaitingForNotify <- ((/= "null"). C.unpack <$>) $ (nextQuery |> jq ".applicable_inputs.notify" |> captureTrim)
+          isWaitingForNotify <- (/= "null") . C.unpack <$> (nextQuery |> jq ".applicable_inputs.notify" |> captureTrim)
           if isWaitingForNotify then return WaitingForNotify
           else do
-            unknown <- (C.unpack <$>) $ (nextQuery  |> captureTrim)
+            unknown <- C.unpack <$> (nextQuery  |> captureTrim)
             return $ Unknown unknown 
 
-
-
 submit :: Sponsor -> RaffleConfiguration ->  IO ()
-submit sponsor raffleConfiguration = do
+submit _sponsor raffleConfiguration = do
   cardano_cli 
     "transaction" 
     "sign"
     "--signing-key-file" (sponsorPrivateKeyFilePath raffleConfiguration)
     "--tx-body-file" (tmpTxToSign raffleConfiguration)
     "--out-file" (tmpTxToSubmit raffleConfiguration)
-  echo $ " >> tx signed"
+  echo " >> tx signed"
   marlowe_runtime_cli
     "--marlowe-runtime-host" (host . runtimeURI $ raffleConfiguration)
     "--marlowe-runtime-port" (proxy_port .  runtimeURI $ raffleConfiguration)
     "submit" 
     (tmpTxToSubmit raffleConfiguration)
-  echo $ " >> tx submitted"
+  echo " >> tx submitted"
 
 runRaffleStateMachine :: RaffleConfiguration -> Sponsor -> Oracle -> [String] -> [(PolicyId,TokenName)]  -> ContractId -> IO()
-runRaffleStateMachine raffleConfiguration sponsor oracle parties prizes contractId
-  = runRaffleStateMachine' False raffleConfiguration sponsor oracle  parties prizes contractId
+runRaffleStateMachine = runRaffleStateMachine' False
 
 runRaffleStateMachine' :: Bool -> RaffleConfiguration -> Sponsor -> Oracle  -> [String] -> [(PolicyId,TokenName)]  -> ContractId ->  IO()
 runRaffleStateMachine' True _ _ _ _ _ _ = return ()
 runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes contractId = do
   sleep "5s" 
-  state <- getState (runtimeURI raffleConfiguration) contractId
-  case state of 
+  state' <- getState (runtimeURI raffleConfiguration) contractId
+  case state' of 
     WaitingForPrizeDeposit -> do
       echo ""
       echo "#########################"
       echo "WaitingForPrizeDeposit"
-      sequence $ (\(a,b) -> depositNFT contractId a b) <$> prizes
+      sequence_ $ uncurry (depositNFT contractId) <$> prizes
       echo ">>>> Prize NFTs Deposited"
       echo "#########################"
       runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes contractId
       where 
             depositNFT :: ContractId -> PolicyId -> TokenName -> IO()
-            depositNFT contractId policyId tokenName = do
+            depositNFT contractId' policyId tokenName = do
               echo $ " >> Depositing " ++ tokenName
               marlowe_runtime_cli
                 "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
@@ -155,7 +168,7 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
                 "deposit"
                 "--change-address"  (s_address sponsor)
                 "--manual-sign"     (tmpTxToSign raffleConfiguration)
-                "--contract" contractId
+                "--contract" contractId'
                 "--to-party" (s_address sponsor)
                 "--from-party" (s_address sponsor) 
                 "--currency" policyId
@@ -201,7 +214,7 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
       echo "WaitingForNotify"
       echo "#########################"
       notify
-      echo $ " >> Notified"
+      echo " >> Notified"
       echo "#########################"   
       runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes contractId
         where 

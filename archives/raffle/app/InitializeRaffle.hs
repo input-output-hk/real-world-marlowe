@@ -7,14 +7,14 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE TypeApplications #-}
 
-import qualified Data.ByteString.Lazy.Char8 as C
+import Data.Maybe
+import GHC.Generics
 import Shh
 import Shh.Internal (toArgs)
 import System.Environment (getArgs)
-import GHC.Generics
-import Data.Maybe
 import qualified Data.Aeson as A
 import qualified Data.ByteString.Lazy as LBS 
+import qualified Data.ByteString.Lazy.Char8 as C
 
 cat :: Command a => a
 cat = toArgs ["cat"]
@@ -31,11 +31,14 @@ marlowe_runtime_cli = toArgs ["marlowe-runtime-cli"]
 echo :: Command a => a
 echo = toArgs ["echo"]
 
-
 type PolicyId = String
+
 type TokenName = String
+
 type ContractId = String
+
 type AddressBech32 = String
+
 data RaffleConfiguration 
     = RaffleConfiguration 
     { runtimeURI :: RuntimeURI
@@ -48,11 +51,14 @@ data RaffleConfiguration
     , sponsorPrivateKeyFilePath :: FilePath
     , deadlines :: Deadlines
     } deriving (Show,Generic,A.FromJSON,A.ToJSON)
-newtype Sponsor = Sponsor {s_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
-newtype Oracle = Oracle {o_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
-data RuntimeURI = RuntimeURI {host :: String, proxy_port :: Integer, web_port :: Integer} deriving (Show,Generic,A.FromJSON,A.ToJSON)
-data Deadlines = Deadlines {deposit :: String, selectWinner :: String, payout :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 
+newtype Sponsor = Sponsor {s_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
+
+newtype Oracle = Oracle {o_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
+
+data RuntimeURI = RuntimeURI {host :: String, proxy_port :: Integer, web_port :: Integer} deriving (Show,Generic,A.FromJSON,A.ToJSON)
+
+data Deadlines = Deadlines {deposit :: String, selectWinner :: String, payout :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 
 main :: IO ()
 main = do
@@ -60,23 +66,17 @@ main = do
   raffleConfiguration <- fromJust . A.decode @RaffleConfiguration <$> LBS.readFile (head args) 
   parties <- fromJust . A.decode @[AddressBech32] <$> LBS.readFile (args !! 1) 
   prizes <- fromJust . A.decode @[(PolicyId,TokenName)] <$> LBS.readFile (args !! 2)   
- 
   s_address' <- C.unpack <$> (cat (sponsorAddressFilePath raffleConfiguration) |> captureTrim)
-   
   let sponsor = Sponsor{ s_address = s_address'}
       oracle = Oracle{ o_address = s_address'}
-
-
   contractId <- genAndInitializeRaffle
     raffleConfiguration
     sponsor
     oracle
     parties
     prizes
-  
   echo contractId
   
-
 submit :: Sponsor -> RaffleConfiguration ->  IO ()
 submit _sponsor raffleConfiguration = do
   cardano_cli 
@@ -155,5 +155,3 @@ genAndInitializeRaffle raffleConfiguration sponsor oracle parties prizes = do
       submit sponsor raffleConfiguration
       echo " >> Contract initialzed (tx appended)" &> StdErr
       return contractId
-
-
