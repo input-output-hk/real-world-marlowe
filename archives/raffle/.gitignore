@@ -1,2 +1,4 @@
 outputs/
 dist-newstyle/
+bin/
+raffle-bin.tar
