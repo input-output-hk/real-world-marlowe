@@ -10,6 +10,7 @@
 module Main where
 
 import Common
+import Control.Applicative ((<|>))
 import Data.List.Utils (replace)
 import Data.Maybe
 import PyF
@@ -18,6 +19,7 @@ import System.Environment (getArgs)
 import Tools
 import Types
 import qualified Data.Aeson as A
+import qualified Data.Aeson.Types as A
 import qualified Data.ByteString.Lazy as LBS 
 import qualified Data.ByteString.Lazy.Char8 as C
 
@@ -47,31 +49,55 @@ data ContractState
   | Unknown String
   deriving (Show,Eq)
 
+instance A.FromJSON ContractState where
+  parseJSON =
+    A.withObject "ContractState" $ \o ->
+      let
+        isClose =
+          do
+            e <- o A..: "errorCode"
+            if e == "contractClosed"
+              then pure Close
+              else fail "Not closed"
+        isWaiting =
+          do
+            a <- o A..: "applicable_inputs"
+            let
+              assertNotNull =
+                A.withArray "Array" $ \v ->
+                  if null v
+                    then fail "Null array"
+                    else pure ()
+              isWaitingForOracle = 
+                do
+                  x <- a A..: "choices" :: A.Parser A.Value
+                  assertNotNull x
+                  pure WaitingForOracle
+              isWaitingForPrizeDeposit =
+                do
+                  x <- a A..: "deposits"
+                  assertNotNull x
+                  pure WaitingForPrizeDeposit
+              isWaitingForNotify =
+                do
+                  _ <- a A..: "notify" :: A.Parser A.Value
+                  pure WaitingForNotify
+            isWaitingForOracle <|> isWaitingForPrizeDeposit <|> isWaitingForNotify
+        isUnknown = pure . Unknown . C.unpack $ A.encode o
+      in
+        isClose <|> isWaiting <|> isUnknown
+
 getState :: RuntimeURI -> ContractId -> IO ContractState
 getState runtime contractId = do
   validityStart <- C.unpack <$> (date "-u" "+\"%Y-%m-%dT%H:%M:%SZ\"" |> captureTrim)
   validityEnd <-   C.unpack <$> (date "-u" "-d" "+10 minutes" "+\"%Y-%m-%dT%H:%M:%SZ\"" |> captureTrim)
   let contractIdEncoded = replace "#" "%23" contractId
-      nextQuery = curl
-                  "-s"  
-                  "-H" 
-                  "GET" 
-                  [fmt|http://{(host $ runtime)}:{(show . web_port $ runtime)}/contracts/{contractIdEncoded}/next?validityStart={replace "\"" "" validityStart}&validityEnd={replace "\"" "" validityEnd}|]
-  
-  isClose <- ((== "\"contractClosed\""). C.unpack <$>) $ nextQuery |> jq ".errorCode" |> captureTrim
-  if isClose then return Close
-    else do 
-      isWaitingForOracle <- (/= "null"). C.unpack <$> (nextQuery |> jq ".applicable_inputs.choices[0]" |> captureTrim)
-      if isWaitingForOracle then return WaitingForOracle
-      else do 
-        isWaitingForPrizeDeposit <- (/= "null") . C.unpack <$> (nextQuery |> jq ".applicable_inputs.deposits[0]" |> captureTrim)
-        if isWaitingForPrizeDeposit then return WaitingForPrizeDeposit
-        else do 
-          isWaitingForNotify <- (/= "null") . C.unpack <$> (nextQuery |> jq ".applicable_inputs.notify" |> captureTrim)
-          if isWaitingForNotify then return WaitingForNotify
-          else do
-            unknown <- C.unpack <$> (nextQuery  |> captureTrim)
-            return $ Unknown unknown 
+  nextQuery <- curl "-s"  "-H" "GET" 
+                 [fmt|http://{(host $ runtime)}:{(show . web_port $ runtime)}/contracts/{contractIdEncoded}/next?validityStart={replace "\"" "" validityStart}&validityEnd={replace "\"" "" validityEnd}|]
+                 |> captureTrim
+  pure $ case A.decodeStrict $ C.toStrict nextQuery of
+    Nothing -> Unknown $ C.unpack nextQuery
+    Just state' -> state'
 
 runRaffleStateMachine :: RaffleConfiguration -> Sponsor -> Oracle -> [String] -> [(PolicyId,TokenName)]  -> ContractId -> IO()
 runRaffleStateMachine = runRaffleStateMachine' False

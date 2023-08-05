@@ -21,9 +21,6 @@ sleep = toArgs ["sleep"]
 curl :: Command a => a
 curl = toArgs ["curl"]
 
-jq :: Command a => a
-jq = toArgs ["jq"]
-
 cardano_cli :: Command a => a
 cardano_cli = toArgs ["cardano-cli"]
 

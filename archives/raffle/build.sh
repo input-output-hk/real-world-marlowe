@@ -6,7 +6,7 @@ mkdir -p bin
 
 for e in cardano-cli marlowe-cli marlowe-runtime-cli InitializeRaffle ExecuteRaffle
 do
-  nix --offline build .#$e
+  nix build .#$e
   cp -f result/bin/$e bin/$e
   rm result
 done

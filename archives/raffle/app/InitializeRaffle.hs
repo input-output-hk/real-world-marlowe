@@ -76,6 +76,7 @@ genAndInitializeRaffle raffleConfiguration sponsor oracle parties prizes = do
                   "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
                   "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
                   "load"
+                  "--read-json"
                   (contract raffleConfiguration)
                   |> captureTrim
               )
