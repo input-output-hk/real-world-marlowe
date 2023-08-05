@@ -32,7 +32,7 @@ main = do
     oracle
     parties
     prizes
-  echo contractId
+  printResult $ C.pack contractId
   
 genAndInitializeRaffle :: RaffleConfiguration -> Sponsor -> Oracle -> [String] -> [(PolicyId,TokenName)] -> IO ContractId
 genAndInitializeRaffle raffleConfiguration sponsor oracle parties prizes = do
@@ -46,7 +46,7 @@ genAndInitializeRaffle raffleConfiguration sponsor oracle parties prizes = do
   contractHash <- loadContractToStore
   contractId <- initialize contractHash
   echo "-------------------------" &> StdErr
-  echo ("Raffle Contract Initialized : " ++ contractId ) &> StdErr
+  echo ("Raffle Contract Initialized : " ++ read contractId ) &> StdErr
   echo "-------------------------" &> StdErr
   echo "#########################" &> StdErr
   return contractId
@@ -80,7 +80,7 @@ genAndInitializeRaffle raffleConfiguration sponsor oracle parties prizes = do
                   (contract raffleConfiguration)
                   |> captureTrim
               )
-      echo (" >> Contract stored with hash :" ++ contractHash) &> StdErr
+      echo (" >> Contract stored with hash: " ++ contractHash) &> StdErr
       return contractHash
 
     initialize :: String -> IO ContractId
@@ -93,7 +93,7 @@ genAndInitializeRaffle raffleConfiguration sponsor oracle parties prizes = do
         "--change-address"  (s_address sponsor)
         "--manual-sign"     (tmpTxToSign raffleConfiguration)
         "--contract-hash"   contractHash |> captureTrim)
-      echo contractId &> StdErr
+      echo (read contractId :: String) &> StdErr
       submit sponsor raffleConfiguration
       echo " >> Contract initialzed (tx appended)" &> StdErr
       return contractId

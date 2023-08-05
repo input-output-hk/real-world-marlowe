@@ -22,7 +22,6 @@
       type = "github";
       owner = "input-output-hk";
       repo = "marlowe-cardano";
-    # ref = "f49df7c0490ebda390154fd90940f94b430b99b4";
       ref = "ae9a7ecea27b4ea24817675adfd7ed01c8428e25";
     };
     cardano-world.follows = "marlowe/cardano-world";

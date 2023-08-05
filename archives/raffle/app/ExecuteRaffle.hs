@@ -120,18 +120,20 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
             depositNFT :: ContractId -> PolicyId -> TokenName -> IO()
             depositNFT contractId' policyId tokenName = do
               echo $ " >> Depositing " ++ tokenName
-              marlowe_runtime_cli
-                "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
-                "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
-                "deposit"
-                "--change-address"  (s_address sponsor)
-                "--manual-sign"     (tmpTxToSign raffleConfiguration)
-                "--contract" contractId'
-                "--to-party" (s_address sponsor)
-                "--from-party" (s_address sponsor) 
-                "--currency" policyId
-                "--token-name" tokenName
-                "--quantity" 1
+              printResult =<< (
+                marlowe_runtime_cli
+                  "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
+                  "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
+                  "deposit"
+                  "--change-address"  (s_address sponsor)
+                  "--manual-sign"     (tmpTxToSign raffleConfiguration)
+                  "--contract" contractId'
+                  "--to-party" (s_address sponsor)
+                  "--from-party" (s_address sponsor) 
+                  "--currency" policyId
+                  "--token-name" tokenName
+                  "--quantity" 1
+                  |> captureTrim)
               submit sponsor raffleConfiguration
               echo $ " >> " ++ tokenName ++ " deposited" 
     WaitingForOracle -> do
@@ -154,16 +156,18 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
                 [fmt|https://www.random.org/integers/?format=plain&col=1&rnd=new&base=10&num=1&min={0}&max={show $ (length parties)-1}|]
               |> captureTrim)
             
-          marlowe_runtime_cli
-            "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
-            "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
-            "choose"
-            "--change-address"  (s_address sponsor)
-            "--manual-sign"     (tmpTxToSign raffleConfiguration)
-            "--contract" contractId
-            "--choice" "RANDOM"
-            "--party" (s_address sponsor)
-            "--value" choiceMade 
+          printResult =<< (
+            marlowe_runtime_cli
+              "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
+              "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
+              "choose"
+              "--change-address"  (s_address sponsor)
+              "--manual-sign"     (tmpTxToSign raffleConfiguration)
+              "--contract" contractId
+              "--choice" "RANDOM"
+              "--party" (s_address sponsor)
+              "--value" choiceMade 
+              |> captureTrim)
           submit sponsor raffleConfiguration
           return choiceMade
     WaitingForNotify -> do
@@ -177,13 +181,15 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
       runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes contractId
         where 
           notify  = do 
-            marlowe_runtime_cli
-              "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
-              "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
-              "notify"
-              "--change-address"  (s_address sponsor)
-              "--manual-sign"     (tmpTxToSign raffleConfiguration)
-              "--contract" contractId
+            printResult =<< (
+              marlowe_runtime_cli
+                "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
+                "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
+                "notify"
+                "--change-address"  (s_address sponsor)
+                "--manual-sign"     (tmpTxToSign raffleConfiguration)
+                "--contract" contractId
+                |> captureTrim)
             submit sponsor raffleConfiguration
              
     Close -> do 
