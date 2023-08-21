@@ -4874,16 +4874,16 @@
         "std": "std_4"
       },
       "locked": {
-        "lastModified": 1691250201,
-        "narHash": "sha256-DMEDb32FcbWMctg+SHbG7AJU4cVz5QXlg8gdoVidB2E=",
+        "lastModified": 1691771353,
+        "narHash": "sha256-GcAFXzvvzDTk47kiexnohcAnOBRsmsFG+1hUa63NAFU=",
         "owner": "input-output-hk",
         "repo": "marlowe-cardano",
-        "rev": "ae9a7ecea27b4ea24817675adfd7ed01c8428e25",
+        "rev": "addc170fecf45c48a9e728b791217879969d0876",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "ae9a7ecea27b4ea24817675adfd7ed01c8428e25",
+        "ref": "addc170fecf45c48a9e728b791217879969d0876",
         "repo": "marlowe-cardano",
         "type": "github"
       }
