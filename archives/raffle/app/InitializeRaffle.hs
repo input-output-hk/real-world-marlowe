@@ -21,7 +21,8 @@ main :: IO ()
 main = do
   args <- getArgs  
   raffleConfiguration <- fromJust . A.decode @RaffleConfiguration <$> LBS.readFile (head args) 
-  parties <- fromJust . A.decode @[AddressBech32] <$> LBS.readFile (args !! 1) 
+  partyInfo <- fromJust . A.decode @[PartyInfo] <$> LBS.readFile (args !! 1) 
+  let parties = payment_address <$> partyInfo
   prizes <- fromJust . A.decode @[(PolicyId,TokenName)] <$> LBS.readFile (args !! 2)   
   s_address' <- C.unpack <$> (cat (sponsorAddressFilePath raffleConfiguration) |> captureTrim)
   let sponsor = Sponsor{ s_address = s_address'}
