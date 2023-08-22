@@ -95,7 +95,7 @@ getState runtime contractId = do
   validityEnd <-   C.unpack <$> (date "-u" "-d" "+10 minutes" "+\"%Y-%m-%dT%H:%M:%SZ\"" |> captureTrim)
   let contractIdEncoded = replace "#" "%23" contractId
   nextQuery <- curl "-s"  "-H" "GET" 
-                 [fmt|http://{(host $ runtime)}:{(show . web_port $ runtime)}/contracts/{contractIdEncoded}/next?validityStart={replace "\"" "" validityStart}&validityEnd={replace "\"" "" validityEnd}|]
+                 [fmt|http://{(web_host $ runtime)}:{(show . web_port $ runtime)}/contracts/{contractIdEncoded}/next?validityStart={replace "\"" "" validityStart}&validityEnd={replace "\"" "" validityEnd}|]
                  |> captureTrim
   pure $ case A.decodeStrict $ C.toStrict nextQuery of
     Nothing -> Unknown $ C.unpack nextQuery
@@ -125,7 +125,7 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle partyInfo prizes
               echo $ " >> Depositing " ++ tokenName
               printResult =<< (
                 marlowe_runtime_cli
-                  "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
+                  "--marlowe-runtime-host" (proxy_host (runtimeURI raffleConfiguration))
                   "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
                   "deposit"
                   "--change-address"  (s_address sponsor)
@@ -166,7 +166,7 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle partyInfo prizes
             
           printResult =<< (
             marlowe_runtime_cli
-              "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
+              "--marlowe-runtime-host" (proxy_host (runtimeURI raffleConfiguration))
               "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
               "choose"
               "--change-address"  (s_address sponsor)
@@ -191,7 +191,7 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle partyInfo prizes
           notify  = do 
             printResult =<< (
               marlowe_runtime_cli
-                "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
+                "--marlowe-runtime-host" (proxy_host (runtimeURI raffleConfiguration))
                 "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
                 "notify"
                 "--change-address"  (s_address sponsor)

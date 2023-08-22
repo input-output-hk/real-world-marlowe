@@ -74,7 +74,7 @@ genAndInitializeRaffle raffleConfiguration sponsor oracle parties prizes = do
       contractHash <-
         C.unpack
           <$> ( marlowe_runtime_cli
-                  "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
+                  "--marlowe-runtime-host" (proxy_host (runtimeURI raffleConfiguration))
                   "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
                   "load"
                   "--read-json"
@@ -87,7 +87,7 @@ genAndInitializeRaffle raffleConfiguration sponsor oracle parties prizes = do
     initialize :: String -> IO ContractId
     initialize contractHash = do
       contractId <- C.unpack  <$> (marlowe_runtime_cli
-        "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
+        "--marlowe-runtime-host" (proxy_host (runtimeURI raffleConfiguration))
         "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
         "create"
         "--min-utxo" 2_000_000
