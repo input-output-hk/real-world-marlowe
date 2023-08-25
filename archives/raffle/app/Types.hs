@@ -35,7 +35,13 @@ newtype Sponsor = Sponsor {s_address :: String} deriving (Show,Generic,A.FromJSO
 
 newtype Oracle = Oracle {o_address :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 
-data RuntimeURI = RuntimeURI {host :: String, proxy_port :: Integer, web_port :: Integer} deriving (Show,Generic,A.FromJSON,A.ToJSON)
+data RuntimeURI = RuntimeURI {proxy_host :: String, proxy_port :: Integer, web_host :: String, web_port :: Integer} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 
 data Deadlines = Deadlines {deposit :: String, selectWinner :: String, payout :: String} deriving (Show,Generic,A.FromJSON,A.ToJSON)
 
+data PartyInfo
+    = PartyInfo
+    { asset_name :: String
+    , payment_address :: AddressBech32
+    , quantity :: String
+    } deriving (Show,Generic,A.FromJSON,A.ToJSON)

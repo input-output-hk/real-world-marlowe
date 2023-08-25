@@ -20,6 +20,8 @@ import Tools
 import Types
 import qualified Data.Aeson as A
 import qualified Data.Aeson.Types as A
+import qualified Data.ByteString.Base16 as B16
+import qualified Data.ByteString.Char8 as BS8
 import qualified Data.ByteString.Lazy as LBS 
 import qualified Data.ByteString.Lazy.Char8 as C
 
@@ -27,7 +29,7 @@ main :: IO ()
 main = do
   args <- getArgs  
   raffleConfiguration <- fromJust . A.decode @RaffleConfiguration <$> LBS.readFile (head args) 
-  parties <- fromJust . A.decode @[AddressBech32] <$> LBS.readFile (args !! 1) 
+  partyInfo <- fromJust . A.decode @[PartyInfo] <$> LBS.readFile (args !! 1) 
   prizes <- fromJust . A.decode @[(PolicyId,TokenName)] <$> LBS.readFile (args !! 2)
   let contractId = args !! 3   
   s_address' <- C.unpack <$> (cat (sponsorAddressFilePath raffleConfiguration) |> captureTrim)
@@ -37,7 +39,7 @@ main = do
     raffleConfiguration
     sponsor
     oracle
-    parties
+    partyInfo
     prizes 
     contractId 
 
@@ -93,18 +95,19 @@ getState runtime contractId = do
   validityEnd <-   C.unpack <$> (date "-u" "-d" "+10 minutes" "+\"%Y-%m-%dT%H:%M:%SZ\"" |> captureTrim)
   let contractIdEncoded = replace "#" "%23" contractId
   nextQuery <- curl "-s"  "-H" "GET" 
-                 [fmt|http://{(host $ runtime)}:{(show . web_port $ runtime)}/contracts/{contractIdEncoded}/next?validityStart={replace "\"" "" validityStart}&validityEnd={replace "\"" "" validityEnd}|]
+                 [fmt|http://{(web_host $ runtime)}:{(show . web_port $ runtime)}/contracts/{contractIdEncoded}/next?validityStart={replace "\"" "" validityStart}&validityEnd={replace "\"" "" validityEnd}|]
                  |> captureTrim
   pure $ case A.decodeStrict $ C.toStrict nextQuery of
     Nothing -> Unknown $ C.unpack nextQuery
     Just state' -> state'
 
-runRaffleStateMachine :: RaffleConfiguration -> Sponsor -> Oracle -> [String] -> [(PolicyId,TokenName)]  -> ContractId -> IO()
+runRaffleStateMachine :: RaffleConfiguration -> Sponsor -> Oracle -> [PartyInfo] -> [(PolicyId,TokenName)]  -> ContractId -> IO()
 runRaffleStateMachine = runRaffleStateMachine' False
 
-runRaffleStateMachine' :: Bool -> RaffleConfiguration -> Sponsor -> Oracle  -> [String] -> [(PolicyId,TokenName)]  -> ContractId ->  IO()
+runRaffleStateMachine' :: Bool -> RaffleConfiguration -> Sponsor -> Oracle  -> [PartyInfo] -> [(PolicyId,TokenName)]  -> ContractId ->  IO()
 runRaffleStateMachine' True _ _ _ _ _ _ = return ()
-runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes contractId = do
+runRaffleStateMachine' False raffleConfiguration sponsor oracle partyInfo prizes contractId = do
+  let parties = payment_address <$> partyInfo
   sleep "5s" 
   state' <- getState (runtimeURI raffleConfiguration) contractId
   case state' of 
@@ -115,14 +118,14 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
       sequence_ $ uncurry (depositNFT contractId) <$> prizes
       echo ">>>> Prize NFTs Deposited"
       echo "#########################"
-      runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes contractId
+      runRaffleStateMachine' False raffleConfiguration sponsor oracle partyInfo prizes contractId
       where 
             depositNFT :: ContractId -> PolicyId -> TokenName -> IO()
             depositNFT contractId' policyId tokenName = do
               echo $ " >> Depositing " ++ tokenName
               printResult =<< (
                 marlowe_runtime_cli
-                  "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
+                  "--marlowe-runtime-host" (proxy_host (runtimeURI raffleConfiguration))
                   "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
                   "deposit"
                   "--change-address"  (s_address sponsor)
@@ -143,8 +146,13 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
       echo "#########################" 
       choiceMade <- provideRandomChoiceNumber
       echo $ ">>>> Oracle has answered with " ++ choiceMade
+      let winner = partyInfo !! read choiceMade
+          winningTicket = asset_name winner
+          winningTicket' = B16.decode $ BS8.pack winningTicket
+      echo $ ">>>> Winning ticket is " ++ winningTicket ++ either (const "") ((" (" ++) . (++ ")") . BS8.unpack) winningTicket'
+      echo $ ">>>> Snapshotted address is " ++ payment_address winner
       echo "#########################" 
-      runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes contractId 
+      runRaffleStateMachine' False raffleConfiguration sponsor oracle partyInfo prizes contractId 
        where 
         provideRandomChoiceNumber :: IO RandomNumber
         provideRandomChoiceNumber = do
@@ -158,7 +166,7 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
             
           printResult =<< (
             marlowe_runtime_cli
-              "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
+              "--marlowe-runtime-host" (proxy_host (runtimeURI raffleConfiguration))
               "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
               "choose"
               "--change-address"  (s_address sponsor)
@@ -178,12 +186,12 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
       notify
       echo " >> Notified"
       echo "#########################"   
-      runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes contractId
+      runRaffleStateMachine' False raffleConfiguration sponsor oracle partyInfo prizes contractId
         where 
           notify  = do 
             printResult =<< (
               marlowe_runtime_cli
-                "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
+                "--marlowe-runtime-host" (proxy_host (runtimeURI raffleConfiguration))
                 "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
                 "notify"
                 "--change-address"  (s_address sponsor)
@@ -204,4 +212,4 @@ runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes c
       echo "Unknown State : " 
       echo payload
       echo "#########################"  
-      runRaffleStateMachine' False raffleConfiguration sponsor oracle parties prizes contractId 
+      runRaffleStateMachine' False raffleConfiguration sponsor oracle partyInfo prizes contractId 

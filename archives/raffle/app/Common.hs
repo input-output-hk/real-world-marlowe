@@ -22,7 +22,7 @@ submit _sponsor raffleConfiguration = do
   printResult
     =<< (
       marlowe_runtime_cli
-        "--marlowe-runtime-host" (host . runtimeURI $ raffleConfiguration)
+        "--marlowe-runtime-host" (proxy_host . runtimeURI $ raffleConfiguration)
         "--marlowe-runtime-port" (proxy_port .  runtimeURI $ raffleConfiguration)
         "submit" 
         (tmpTxToSubmit raffleConfiguration)

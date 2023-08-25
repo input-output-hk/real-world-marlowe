@@ -21,7 +21,8 @@ main :: IO ()
 main = do
   args <- getArgs  
   raffleConfiguration <- fromJust . A.decode @RaffleConfiguration <$> LBS.readFile (head args) 
-  parties <- fromJust . A.decode @[AddressBech32] <$> LBS.readFile (args !! 1) 
+  partyInfo <- fromJust . A.decode @[PartyInfo] <$> LBS.readFile (args !! 1) 
+  let parties = payment_address <$> partyInfo
   prizes <- fromJust . A.decode @[(PolicyId,TokenName)] <$> LBS.readFile (args !! 2)   
   s_address' <- C.unpack <$> (cat (sponsorAddressFilePath raffleConfiguration) |> captureTrim)
   let sponsor = Sponsor{ s_address = s_address'}
@@ -73,7 +74,7 @@ genAndInitializeRaffle raffleConfiguration sponsor oracle parties prizes = do
       contractHash <-
         C.unpack
           <$> ( marlowe_runtime_cli
-                  "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
+                  "--marlowe-runtime-host" (proxy_host (runtimeURI raffleConfiguration))
                   "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
                   "load"
                   "--read-json"
@@ -86,7 +87,7 @@ genAndInitializeRaffle raffleConfiguration sponsor oracle parties prizes = do
     initialize :: String -> IO ContractId
     initialize contractHash = do
       contractId <- C.unpack  <$> (marlowe_runtime_cli
-        "--marlowe-runtime-host" (host (runtimeURI raffleConfiguration))
+        "--marlowe-runtime-host" (proxy_host (runtimeURI raffleConfiguration))
         "--marlowe-runtime-port" (proxy_port (runtimeURI raffleConfiguration))
         "create"
         "--min-utxo" 2_000_000

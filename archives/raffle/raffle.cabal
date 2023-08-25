@@ -39,6 +39,7 @@ executable ExecuteRaffle
     build-depends:    base ^>=4.14.3.0,
                       aeson,
                       bytestring,
+                      base16-bytestring,
                       MissingH,
                       PyF,
                       shh
