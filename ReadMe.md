@@ -1,3 +1,5 @@
+$${\color{red}\text{The content of this repository has been relocated to the ``awesome-marlowe'' repository.}}$$
+
 # Gallery of Marlowe Contracts on Cardano Mainnet
 
 Click on the image below to navigate to individual contracts.
